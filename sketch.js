@@ -13,7 +13,7 @@ const PIPE_WIDTH = 60;
 const CHAR_X = 100;
 const delT = 1/60;
 
-var clouds 
+var clouds
 var gameOver 
 var achievedBestScore 
 var jumpDeadTimer  
@@ -27,6 +27,9 @@ var bestScore
 var pipes  
 var bestScore = 0
 var wingAngle 
+var stars
+var countStar
+var star
 
 function init() 
 {
@@ -38,12 +41,14 @@ function init()
         {x_pos: 2200, y_pos: 59, size: 40},
         {x_pos: 2700, y_pos: 150, size: 80},
         {x_pos: 3200, y_pos: 130, size: 70}
-    ]
+    ];
     pipes = [
         {x_pos: 500, y_pos: 200, gap: 200},
         {x_pos: 800, y_pos: 300, gap: 200},
         {x_pos: WIDTH + 100, y_pos: 150, gap: 200},
-    ]
+    ];
+    stars = [];
+    countStar = 1000;
     gameOver = false;
     gameOverTimer = 0;
     jumpDeadTimer = JUMP_DEAD_TIME;
@@ -55,13 +60,16 @@ function init()
     speed = INIT_SPEED
     jump = false
     achievedBestScore = false
+    
 }
 
 
 function setup()
 {
     createCanvas(WIDTH, HEIGHT);
-    init()
+    star=new drawStar();//define star
+    init();
+    drawStar();
 }
 
 function move()
@@ -118,6 +126,7 @@ function endGame()
 
 function draw()
 {
+
     if (gameOver) 
         {
             background(0, 0, 0); 
@@ -140,9 +149,16 @@ function draw()
         return;
 
     }
+    
+    star.createStar();//create star
+    
+    for (let i = 0; i < stars.length; i++) 
+        {
+            stars[i].createStar();
+        }
     checkInBounds()
     checkPipeCollision()
-	background(100, 155, 255); // fill the sky blue
+	background(0); // fill the sky blue
    
     // Draw clouds.
     for (cloud of clouds) 
@@ -156,13 +172,13 @@ function draw()
 
     moveClouds();
     movePipes();
-
+    
     move()
     score = Math.ceil(x_dist / 50);
 	// Draw game character.
 	drawGameChar(CHAR_X, y_dist)
     textAlign(CENTER);
-    fill(0);
+    fill(255);
     noStroke();
     textSize(30);
     text("distance: " + score + "m", WIDTH / 2, 30);
@@ -174,6 +190,18 @@ function draw()
         {   
             wingAngle /= 1.2
         }
+}
+
+function drawStar()
+{
+    this.x=random(0,width);//random value between 0 and width
+    this.y=random(0,height);//random value between 0 and height
+
+    this.createStar=function(){
+        fill (126,214,223);
+        noStroke ();
+        ellipse(this.x,this.y,8,8);//ellipse(locationX,locationY,sizeX,sizeY);
+    }
 }
 
 function moveClouds()
@@ -220,21 +248,25 @@ function keyPressed()
 
 function drawGameChar(x, y)
 {
-    //head
+
     push();
-    noStroke();
-    fill(255, 204, 123);
-    ellipse(x, y, 22, 22);
-    //eyes
-    fill(255);
-    ellipse(x + 5, y - 5, 5, 5);
-    fill(0);
-    ellipse(x + 5, y - 5, 2.5, 2.5);
-    // Wing
-    fill(255);
-    translate(x - 5, y)
-    rotate(wingAngle)
-    ellipse(-5, 0, 20, 10);
+    // spaceship
+    fill(160, 160, 160)
+    beginShape();
+    vertex(x - 20, y + 20);
+    vertex(x - 10, y + 0);
+    vertex(x - 20, y - 20);
+    vertex(x + 20, y);
+    endShape(CLOSE);
+
+    // flame
+    fill(255, 128, 0)
+    beginShape();
+    vertex(x - 15, y - 10);
+    vertex(x - 30, y);
+    vertex(x - 15, y + 10);
+    vertex(x - 10, y);
+    endShape(CLOSE);
     pop();
     
 
@@ -244,19 +276,21 @@ function drawCloud(cloud)
 {
     push();
     noStroke();
-    fill(255);
+    fill(255, 140, 0);
     ellipse(cloud.x_pos - 100, cloud.y_pos, cloud.size);
-    ellipse(cloud.x_pos - 60, cloud.y_pos, cloud.size);
-    ellipse(cloud.x_pos - 130, cloud.y_pos, cloud.size, cloud.size/1.2);
-    ellipse(cloud.x_pos - 30, cloud.y_pos, cloud.size, cloud.size/1.2);
+//    ellipse(cloud.x_pos - 60, cloud.y_pos, cloud.size);
+//    ellipse(cloud.x_pos - 130, cloud.y_pos, cloud.size, cloud.size/1.2);
+//    ellipse(cloud.x_pos - 30, cloud.y_pos, cloud.size, cloud.size/1.2);
     pop();
 }
+
+
 
 function drawPipe(pipe)
 {
     push();
     noStroke();
-    fill(0, 255, 0);
+    fill(255, 51, 51);
     rect(pipe.x_pos, 0, PIPE_WIDTH, pipe.y_pos); 
     rect(pipe.x_pos - PIPE_LIP, pipe.y_pos - PIPE_LIP, PIPE_WIDTH + 2*PIPE_LIP, PIPE_LIP); 
     let h = pipe.y_pos + pipe.gap
@@ -264,3 +298,4 @@ function drawPipe(pipe)
     rect(pipe.x_pos - PIPE_LIP, h - PIPE_LIP, PIPE_WIDTH + 2*PIPE_LIP, PIPE_LIP); 
     pop();
 }
+
