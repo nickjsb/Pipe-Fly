@@ -27,9 +27,6 @@ var bestScore
 var pipes  
 var bestScore = 0
 var wingAngle 
-var stars
-var countStar
-var star
 
 function init() 
 {
@@ -63,13 +60,10 @@ function init()
     
 }
 
-
 function setup()
 {
     createCanvas(WIDTH, HEIGHT);
-    star=new drawStar();//define star
     init();
-    drawStar();
 }
 
 function move()
@@ -85,7 +79,6 @@ function move()
     jumpDeadTimer += 1
     jump = false;
 }
-
 
 function checkInBounds() 
 {
@@ -150,12 +143,7 @@ function draw()
 
     }
     
-    star.createStar();//create star
     
-    for (let i = 0; i < stars.length; i++) 
-        {
-            stars[i].createStar();
-        }
     checkInBounds()
     checkPipeCollision()
 	background(0); // fill the sky blue
@@ -190,18 +178,6 @@ function draw()
         {   
             wingAngle /= 1.2
         }
-}
-
-function drawStar()
-{
-    this.x=random(0,width);//random value between 0 and width
-    this.y=random(0,height);//random value between 0 and height
-
-    this.createStar=function(){
-        fill (126,214,223);
-        noStroke ();
-        ellipse(this.x,this.y,8,8);//ellipse(locationX,locationY,sizeX,sizeY);
-    }
 }
 
 function moveClouds()
@@ -245,7 +221,6 @@ function keyPressed()
         }
 }
 
-
 function drawGameChar(x, y)
 {
 
@@ -276,15 +251,15 @@ function drawCloud(cloud)
 {
     push();
     noStroke();
-    fill(255, 140, 0);
+    var r = random(0, 255)
+    var g = random(0, 255)
+    fill(r, g, 0);
     ellipse(cloud.x_pos - 100, cloud.y_pos, cloud.size);
 //    ellipse(cloud.x_pos - 60, cloud.y_pos, cloud.size);
 //    ellipse(cloud.x_pos - 130, cloud.y_pos, cloud.size, cloud.size/1.2);
 //    ellipse(cloud.x_pos - 30, cloud.y_pos, cloud.size, cloud.size/1.2);
     pop();
 }
-
-
 
 function drawPipe(pipe)
 {
@@ -298,4 +273,3 @@ function drawPipe(pipe)
     rect(pipe.x_pos - PIPE_LIP, h - PIPE_LIP, PIPE_WIDTH + 2*PIPE_LIP, PIPE_LIP); 
     pop();
 }
-
